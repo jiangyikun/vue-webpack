@@ -1,0 +1,9 @@
+//配置jsx   让vue也能使用jsx语法
+{
+  "presets":[
+    "env"
+  ],
+  "plugins":[
+    "transform-vue-jsx"
+  ]
+}
