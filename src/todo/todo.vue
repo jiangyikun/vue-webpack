@@ -7,19 +7,15 @@
       placeholder="接下去要做什么？"
       @keyup.enter="addTodo"
     />
-    <Item 
-    v-for="item in todos" 
-    :key="item.id" 
-    :todo="item"
-    @delete='deleteByid' />
-    <Tabs :filter="filter"></Tabs>
+    <Item v-for="item in filterTodos" :key="item.id" :todo="item" @delete="deleteByid" />
+    <Tabs :filter="filter" :todos="todos" @toggerChange="toggerChange" @clearAllCompleted='clearAllCompleted'></Tabs>
   </section>
 </template>
 
 <script>
 import Item from "./item.vue";
 import Tabs from "./tabs.vue";
-let id = 0;
+let id = 1;
 export default {
   data() {
     return {
@@ -31,6 +27,15 @@ export default {
     Item,
     Tabs
   },
+  computed: {
+    filterTodos:function() {
+      if(this.filter==='all'){
+        return this.todos
+      }
+      const status = this.filter==='completed';
+      return this.todos.filter(item=>item.completed===status);
+    }
+  },
   methods: {
     addTodo(e) {
       let value = e.target.value;
@@ -39,13 +44,19 @@ export default {
         content: value,
         completed: false
       });
-      e.target.value='';
+      e.target.value = "";
     },
-    deleteByid(id){
-      this.todos = this.todos.filter(item=>{
-        return item.id!==id
-      })
-      console.log(id);
+    deleteByid(id) {
+      this.todos = this.todos.filter(item => {
+        return item.id !== id;
+      });
+    },
+    toggerChange(status){
+      this.filter = status;
+    },
+    clearAllCompleted(){
+      console.log(this.todos);
+      this.todos = this.todos.filter(item=>!item.completed)
     }
   }
 };
